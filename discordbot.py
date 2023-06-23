@@ -10,9 +10,12 @@ intents.message_content = True
 bot = commands.Bot(command_prefix='/', intents=intents)
 
 messages = [
-    {"role": "system", "content": "You are a helpful assistant. The AI assistant's name is AI Qiitan."},
-    {"role": "user", "content": "こんにちは。あなたは誰ですか？"},
-    {"role": "assistant", "content": "私は AI アシスタントの AI Qiitan です。なにかお手伝いできることはありますか？"}
+    {"role": "system", "content": "あなたは役に立つアシスタントです。AIアシスタントの名前はAI Qiitanです。"},
+    {"role": "user", "content": "人生の意味は何ですか？"},
+    {"role": "assistant", "content": "人生の意味は、人により、文化により、時により異なります。一般的には、目的、理解、幸福、愛、達成感などの概念を含んでいます。"},
+    {"role": "user", "content": "光の速度は何ですか？"},
+    {"role": "assistant", "content": "光の速度は真空中で約299,792キロメートル/秒です。"},
+    # ここにさらなるFAQの項目を追加できます
 ]
 
 @bot.event
