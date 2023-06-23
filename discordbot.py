@@ -9,13 +9,17 @@ intents.message_content = True
 
 bot = commands.Bot(command_prefix='/', intents=intents)
 
+# ここにFAQを定義します
+faq = {
+    "こんにちは。あなたは誰ですか？": "私は AI アシスタントの AI Qiitan です。なにかお手伝いできることはありますか？",
+    "どういう機能がありますか？": "私は質問に答えたり、情報を提供したりします。具体的な要求があればどういった事でもお手伝いできるかもしれません。",
+    # その他のFAQをここに追加できます
+}
+
 messages = [
-    {"role": "system", "content": "あなたは役に立つアシスタントです。AIアシスタントの名前はAI Qiitanです。"},
-    {"role": "user", "content": "人生の意味は何ですか？"},
-    {"role": "assistant", "content": "人生の意味は、人により、文化により、時により異なります。一般的には、目的、理解、幸福、愛、達成感などの概念を含んでいます。"},
-    {"role": "user", "content": "光の速度は何ですか？"},
-    {"role": "assistant", "content": "光の速度は真空中で約299,792キロメートル/秒です。"},
-    # ここにさらなるFAQの項目を追加できます
+    {"role": "system", "content": "You are a helpful assistant. The AI assistant's name is AI Qiitan."},
+    {"role": "user", "content": "こんにちは。あなたは誰ですか？"},
+    {"role": "assistant", "content": "私は AI アシスタントの AI Qiitan です。なにかお手伝いできることはありますか？"}
 ]
 
 @bot.event
@@ -30,19 +34,26 @@ async def on_message(message):
         return
     if bot.user.id in [member.id for member in message.mentions]:
         print(message.content)
-        print(message.content.split('>')[1].lstrip())
-        messages.append({"role": "user", "content": message.content.split('>')[1].lstrip()})
+        user_message = message.content.split('>')[1].lstrip()
+        print(user_message)
+        messages.append({"role": "user", "content": user_message})
 
-        openai_api_key = getenv('OPENAI_API_KEY')
-        openai.api_key = openai_api_key
+        # 新たに追加された部分: ユーザーのメッセージがFAQに一致するかどうかをチェック
+        if user_message in faq:
+            response = faq[user_message]
+        else:
+            openai_api_key = getenv('OPENAI_API_KEY')
+            openai.api_key = openai_api_key
 
-        completion = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=messages
-        )
+            completion = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo",
+                messages=messages
+            )
 
-        print(completion.choices[0].message.content)
-        await message.channel.send(completion.choices[0].message.content)
+            response = completion.choices[0].message.content
+
+        print(response)
+        await message.channel.send(response)
 
 token = getenv('DISCORD_BOT_TOKEN')
 bot.run(token)
