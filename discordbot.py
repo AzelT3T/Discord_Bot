@@ -29,6 +29,7 @@ def check_with_openai(question):
         ]
     )
     response = completion.choices[0].message.content
+    print(response)
     return response
 
 @bot.event
