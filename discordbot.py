@@ -17,7 +17,7 @@ faq = {
 def check_with_openai(question):
     openai_api_key = getenv('OPENAI_API_KEY')
     openai.api_key = openai_api_key
-    question_list = ", ".join(faq.keys())
+    question_list = ", ".join(f"'{q}'" for q in faq.keys())
     print(question_list)
     prompt = f"{question}という質問がありましたが、これは {question_list} のいずれかの質問と一致しますか？回答は"'yes OR no','一致している質問','一致している質問に対応する回答'"のプロンプトにしたがってください。"
 
