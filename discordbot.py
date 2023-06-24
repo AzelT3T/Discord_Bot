@@ -19,7 +19,7 @@ def check_with_openai(question):
     openai.api_key = openai_api_key
     question_list = ", ".join(f"'{q}'" for q in faq.keys())
     print(question_list)
-    prompt = f"{question}という質問がありましたが、これは {question_list} のいずれかの質問と一致しますか？回答は今から指定する''で囲まれた中の()の中のみを変えて返答してください。余計な文章を入れないように。返答の際には''と()は削除してください。'(yesもしくはno),(question_listのどの質問と一致するか)'。回答例を示します('こんにちは。あなたは誰ですか？', 'どういう機能がありますか？'がquestion_listにある場合)。回答例:yes,どういう機能がありますか？"
+    prompt = f"{question}という質問がありましたが、これは {question_list} のいずれかの質問と一致しますか？。あなたの回答は 'yes' または 'no' の後に、一致する質問をカンマで区切って続けてください。例：'yes,どういう機能がありますか？"
 
     completion = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
