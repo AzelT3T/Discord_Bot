@@ -3,6 +3,8 @@ import traceback
 from discord.ext import commands
 from os import getenv
 import openai
+from sentence_transformers import SentenceTransformer
+import numpy as np
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -22,6 +24,19 @@ messages = [
     {"role": "assistant", "content": "私はヘルプデスクです。なにかお手伝いできることはありますか？"}
 ]
 
+# SentenceTransformerのモデルをロード
+model = SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')
+
+# FAQの質問をベクトル化
+faq_questions = list(faq.keys())
+faq_embeddings = model.encode(faq_questions)
+
+def find_closest_question(user_question):
+    user_embedding = model.encode([user_question])
+    distances = np.linalg.norm(faq_embeddings - user_embedding, axis=1)
+    closest_idx = np.argmin(distances)
+    return faq_questions[closest_idx]
+
 @bot.event
 async def on_command_error(ctx, error):
     orig_error = getattr(error, "original", error)
@@ -38,9 +53,9 @@ async def on_message(message):
         print(user_message)
         messages.append({"role": "user", "content": user_message})
 
-        # 新たに追加された部分: ユーザーのメッセージがFAQに一致するかどうかをチェック
-        if user_message in faq:
-            response = faq[user_message]
+        closest_question = find_closest_question(user_message)
+        if np.linalg.norm(model.encode([user_message]) - model.encode([closest_question])) < 0.5:
+            response = faq[closest_question]
         else:
             openai_api_key = getenv('OPENAI_API_KEY')
             openai.api_key = openai_api_key
@@ -57,3 +72,4 @@ async def on_message(message):
 
 token = getenv('DISCORD_BOT_TOKEN')
 bot.run(token)
+
