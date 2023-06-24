@@ -19,7 +19,7 @@ def check_with_openai(question):
     openai.api_key = openai_api_key
     question_list = ", ".join(f"'{q}'" for q in faq.keys())
     print(question_list)
-    prompt = f"{question}という質問がありましたが、これは {question_list} のいずれかの質問と一致しますか？回答は'yes OR no','一致している質問','一致している質問に対応する回答'の3つを句読点で繋げて出力してください。''で囲まれた部分は変数になります。ほかに余分な文章は入れないこと。"
+    prompt = f"{question}という質問がありましたが、これは {question_list} のいずれかの質問と一致しますか？yesかnoのみで答えてください。"
 
     completion = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
