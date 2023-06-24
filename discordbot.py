@@ -58,7 +58,7 @@ def sentence_similarity(sentence1, sentence2):
 @bot.event
 async def on_command_error(ctx, error):
     orig_error = getattr(error, "original", error)
-    error_msg = ''.join(traceback.TracebackException.from_exceptionorig_error).format())
+    error_msg = ''.join(traceback.TracebackException.from_exception(orig_error).format())
     await ctx.send(error_msg)
 
 @bot.event
