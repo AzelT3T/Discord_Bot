@@ -19,7 +19,7 @@ def check_with_openai(question):
     openai_api_key = getenv('OPENAI_API_KEY')
     openai.api_key = openai_api_key
     for faq_question in faq.keys():
-        prompt = f"{question}という質問がありましたが、これは '{faq_question}' の質問と一致しますか？あなたの回答は 'yes' または 'no' を指定してください。"
+        prompt = f"{question}という質問がありましたが、これは '{faq_question}' の質問と一致しますか？。あなたの回答は 'yes' または 'no' の後に、一致する質問をカンマで区切って続けてください。例：'yes,どういう機能がありますか？"
 
         completion = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
