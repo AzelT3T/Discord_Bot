@@ -17,20 +17,21 @@ faq = {
 def check_with_openai(question):
     openai_api_key = getenv('OPENAI_API_KEY')
     openai.api_key = openai_api_key
-    question_list = ", ".join(f"'{q}'" for q in faq.keys())
-    print(question_list)
-    prompt = f"{question}という質問がありましたが、これは {question_list} のいずれかの質問と一致しますか？。あなたの回答は 'yes' または 'no' の後に、一致する質問をカンマで区切って続けてください。例：'yes,どういう機能がありますか？"
+    for faq_question in faq.keys():
+        prompt = f"{question}という質問がありましたが、これは '{faq_question}' の質問と一致しますか？あなたの回答は 'yes' または 'no' を指定してください。"
 
-    completion = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": prompt}
-        ]
-    )
-    response = completion.choices[0].message.content
-    print(response)
-    return response
+        completion = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": prompt}
+            ]
+        )
+        response = completion.choices[0].message.content.lower()
+        print(response)
+        if "yes" in response:
+            return faq[faq_question]
+    return None
 
 @bot.event
 async def on_command_error(ctx, error):
@@ -48,14 +49,9 @@ async def on_message(message):
         # ユーザーのメッセージがFAQに一致するかどうかをチェック
         response = check_with_openai(user_message)
         
-        # gpt-3.5-turboの回答が"yes"を含むならば、それに関連するFAQの回答を返す
-        if "yes" in response.lower():
-            matched_question = response.split(",")[1].strip()  # Assuming the second part of the response is the matching question
-            if matched_question in faq:
-                response = faq[matched_question]
-        else:
+        if response is None:
             response = "Sorry, I didn't understand your question. Could you rephrase it or ask something else?"
-        
+
         await message.channel.send(response)
 
 token = getenv('DISCORD_BOT_TOKEN')
