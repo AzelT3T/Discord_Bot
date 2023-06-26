@@ -20,7 +20,7 @@ def check_with_openai(question):
     openai.api_key = openai_api_key
     matched_questions = []
     for faq_question in faq.keys():
-        prompt = f"{question}という質問がありましたが、これは '{faq_question}' の質問と一致しますか？あなたの回答は 'yes' または 'no' の後に、質問の一致度をカンマで区切って出力してください。例：'yes,0.5"
+        prompt = f"{question}という質問がありましたが、これは '{faq_question}' の質問と一致しますか？あなたの回答は 'yes' または 'no' の後に、質問の一致度を数値(1がmax)でカンマで区切って出力してください。例：'yes,0.5"
 
         completion = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
