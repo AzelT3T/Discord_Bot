@@ -32,7 +32,7 @@ def check_with_openai(question):
         print(response)
         if "yes" in response:
             matched_questions.append(faq_question)
-            
+
     if len(matched_questions) > 1:
         prompt = f"次の質問の中で、ユーザーの質問 '{question}' に最も一致しているのはどれですか？ {', '.join(matched_questions)}"
         completion = openai.ChatCompletion.create(
@@ -42,8 +42,9 @@ def check_with_openai(question):
                 {"role": "user", "content": prompt}
             ]
         )
-        best_match = completion.choices[0].message.content
-        return faq[best_match]
+        best_match_full = completion.choices[0].message.content
+        best_match = next((q for q in matched_questions if q in best_match_full), None)
+        return faq[best_match] if best_match else None
     elif matched_questions:
         return faq[matched_questions[0]]
     else:
