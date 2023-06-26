@@ -59,7 +59,7 @@ async def on_message(message):
         response = check_with_openai(user_message)
         
         if response is None:
-            response = "Sorry, I didn't understand your question. Could you rephrase it or ask something else?"
+            response = "該当するfaqが見つかりません。"
 
         await message.channel.send(response)
 
