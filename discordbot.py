@@ -35,7 +35,16 @@ def check_with_openai(question):
             matched_questions.append(faq_question)
             
     if len(matched_questions) > 1:
-        return "Multiple matches found: " + ", ".join(matched_questions) + ". Could you please specify your question further?"
+        prompt = f"次の質問の中で、ユーザーの質問 '{question}' に最も一致しているのはどれですか？ {', '.join(matched_questions)}"
+        completion = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": prompt}
+            ]
+        )
+        best_match = completion.choices[0].message.content
+        return faq[best_match]
     elif matched_questions:
         return faq[matched_questions[0]]
     else:
