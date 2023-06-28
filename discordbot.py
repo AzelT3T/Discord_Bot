@@ -64,10 +64,7 @@ async def on_message(message):
         return
     if bot.user.id in [member.id for member in message.mentions]:
         user_message = message.content.split('>')[1].lstrip()
-
-        # ユーザーのメッセージがFAQに一致するかどうかをチェック
         response = check_with_openai(user_message)
-        
         if response is None:
             response = "該当するfaqが見つかりません。"
 
