@@ -20,6 +20,7 @@ def check_with_openai(question):
     openai.api_key = openai_api_key
     matched_questions = []
     for faq_question in faq.keys():
+        #prompt = f"{question}という質問がありましたが、これは '{faq_question}' の質問と一致しますか？あなたの回答は 'yes' または 'no' を指定してください。"
         prompt = f"user asked a question called '{question}', does this match the question '{faq_question}'? Your answer should be 'yes' or 'no' only."
 
         completion = openai.ChatCompletion.create(
@@ -35,7 +36,8 @@ def check_with_openai(question):
             matched_questions.append(faq_question)
 
     if len(matched_questions) > 1:
-        prompt = f"次の質問の中で、ユーザーの質問 '{question}' に最も一致しているのはどれですか？ {', '.join(matched_questions)}"
+        #prompt = f"次の質問の中で、ユーザーの質問 '{question}' に最も一致しているのはどれですか？ {', '.join(matched_questions)}"
+        prompt = f"'{', '.join(matched_questions)}' that best matches the user's question'{question}'?"
         completion = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
