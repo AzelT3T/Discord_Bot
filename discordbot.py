@@ -20,7 +20,7 @@ def check_with_openai(question):
     openai.api_key = openai_api_key
     matched_questions = []
     for faq_question in faq.keys():
-        prompt = f"{question}という質問がありましたが、これは '{faq_question}' の質問と一致しますか？あなたの回答は 'yes' または 'no' を指定してください。"
+        prompt = f"user asked a question called '{question}', does this match the question '{faq_question}'? Your answer should be 'yes' or 'no' only."
 
         completion = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
