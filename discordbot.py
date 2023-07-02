@@ -64,8 +64,8 @@ async def on_command_error(ctx, error):
 async def on_message(message):
     if message.author == bot.user:
         return
-    if bot.user.id in [member.id for member in message.mentions]:
-        user_message = message.content.split('>')[1].lstrip()
+    if message.channel.name == '質問':
+        user_message = message.content
         response = check_with_openai(user_message)
         if response is None:
             response = "該当するfaqが見つかりません。"
